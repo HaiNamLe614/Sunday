@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Sunday at Glenelg</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Nunito:wght@400;600;700&display=swap">
+<style>
+/* Layout: one narrow column on a sea-to-sand page; a dachshund on the sand grows longer as questions get answered */
+:root{
+  --sky:#d9eef3; --sea:#0f6e86; --sea-deep:#0a4a5c; --sand:#f3e2c4;
+  --sunset:#ef7a5a; --ink:#17323b; --muted:#557079; --card:#ffffff; --line:#c9dfe4;
+  --chip:#eef6f8; --chip-on:#0f6e86; --chip-on-fg:#ffffff; --dog:#a0582e; --dog-dark:#6e3a1d;
+  --display:"Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --body:"Nunito", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --sky:#0d2730; --sea:#5cc3d8; --sea-deep:#9fe0ec; --sand:#3a3022;
+  --sunset:#ff9b7d; --ink:#e6f2f4; --muted:#9db6bd; --card:#132f38; --line:#24485374;
+  --chip:#183a44; --chip-on:#5cc3d8; --chip-on-fg:#06222a; --dog:#c47a4a; --dog-dark:#8a4f2a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --sky:#0d2730; --sea:#5cc3d8; --sea-deep:#9fe0ec; --sand:#3a3022;
+  --sunset:#ff9b7d; --ink:#e6f2f4; --muted:#9db6bd; --card:#132f38; --line:#24485374;
+  --chip:#183a44; --chip-on:#5cc3d8; --chip-on-fg:#06222a; --dog:#c47a4a; --dog-dark:#8a4f2a; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:linear-gradient(180deg,var(--sky) 0,var(--sky) 55%,var(--sand) 100%);background-color:var(--sky);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;min-height:100vh}
+.wrap{max-width:560px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:flex;flex-direction:column;gap:18px}
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sea);font-weight:700}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(34px,9vw,48px);line-height:1.02;margin:0;text-wrap:balance}
+h1 span{color:var(--sunset)}
+.intro{margin:4px 0 0;color:var(--ink);max-width:60ch}
+.sig{color:var(--muted);font-weight:700}
+/* dog strip */
+.dogbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--sky);padding-block:8px 6px;border-bottom:1px dashed var(--line)}
+.dogbar svg{display:block;width:100%;height:64px;overflow:visible}
+.dogbar .meta{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.body-rect{transition:width .5s cubic-bezier(.3,1.4,.5,1)}
+.front{transition:transform .5s cubic-bezier(.3,1.4,.5,1)}
+.tail{transform-origin:0 0;animation:wag 1.2s ease-in-out infinite}
+@keyframes wag{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(18deg)}}
+form{display:flex;flex-direction:column;gap:14px}
+fieldset{border:0;margin:0;padding:18px;background:var(--card);border-radius:18px;display:flex;flex-direction:column;gap:10px;min-width:0;box-shadow:0 1px 0 var(--line)}
+legend{float:left;width:100%;padding:0;font-family:var(--display);font-weight:800;font-size:20px;line-height:1.2}
+legend + *{clear:both}
+.hint{margin:0;font-size:14px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;pointer-events:none}
+.chip label{display:inline-flex;flex-direction:column;padding:9px 14px;border-radius:999px;background:var(--chip);border:1.5px solid transparent;cursor:pointer;font-weight:700;font-size:15px;line-height:1.25;user-select:none}
+.chip label small{font-weight:600;font-size:12px;color:var(--muted)}
+.chip input:checked + label{background:var(--chip-on);color:var(--chip-on-fg)}
+.chip input:checked + label small{color:inherit;opacity:.85}
+.chip input:focus-visible + label{border-color:var(--sunset)}
+input[type=text],input[type=date],input[type=time],textarea{width:100%;font:inherit;color:var(--ink);background:var(--chip);border:1.5px solid transparent;border-radius:12px;padding:10px 12px}
+input:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--sunset);outline-offset:2px}
+textarea{min-height:84px;resize:vertical}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row > *{flex:1 1 180px;min-width:0}
+.sub{font-size:14px;font-weight:700;color:var(--muted);margin-top:4px}
+button{font:inherit;cursor:pointer}
+.go{background:var(--sunset);color:#2a0f06;border:0;border-radius:999px;padding:14px 22px;font-family:var(--display);font-weight:800;font-size:19px;align-self:flex-start}
+.go:hover{filter:brightness(1.05)}
+.go:disabled{opacity:.6;cursor:wait}
+.err{color:var(--sunset);font-weight:700;margin:0}
+.done{background:var(--card);border-radius:18px;padding:22px 18px;display:flex;flex-direction:column;gap:12px}
+.done h2{font-family:var(--display);font-weight:800;font-size:28px;margin:0;line-height:1.1}
+.summary{white-space:pre-wrap;background:var(--chip);border-radius:12px;padding:12px;font-size:14px;margin:0;user-select:all;overflow-wrap:anywhere}
+.ghost{background:transparent;border:1.5px solid var(--sea);color:var(--sea);border-radius:999px;padding:10px 16px;font-weight:700;align-self:flex-start}
+.run{animation:run 2.4s ease-in-out 1}
+@keyframes run{0%{transform:translateX(0)}45%{transform:translateX(60px)}100%{transform:translateX(0)}}
+.dogbar{position:sticky}
+.dogwrap{position:relative}
+#dogsvg{cursor:pointer;-webkit-tap-highlight-color:transparent}
+#dogsvg.hop{animation:hop .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-14px) rotate(-3deg)}}
+.bubble{position:absolute;top:calc(100% + 6px);left:0;z-index:6;background:var(--card);color:var(--ink);font-weight:700;font-size:14px;line-height:1.3;padding:7px 12px;border-radius:14px;box-shadow:0 2px 10px #0002;max-width:min(260px,70vw);opacity:0;transform:translateY(-6px) scale(.95);transition:opacity .2s,transform .25s cubic-bezier(.3,1.6,.5,1),left .5s cubic-bezier(.3,1.4,.5,1);pointer-events:none;white-space:normal}
+.bubble.show{opacity:1;transform:none}
+.bubble::after{content:"";position:absolute;top:-6px;left:22px;border:7px solid transparent;border-bottom-color:var(--card);border-top:0}
+.sand{stroke:var(--sea);opacity:.35}
+.chip label{transition:transform .15s}
+.chip label:hover{transform:translateY(-2px) rotate(-1deg)}
+.chip input:checked + label{animation:pop .35s cubic-bezier(.3,1.8,.5,1)}
+@keyframes pop{0%{transform:scale(.9)}100%{transform:scale(1)}}
+.paw{position:fixed;width:22px;height:22px;pointer-events:none;z-index:50;color:var(--sunset);animation:pawup .9s ease-out forwards}
+@keyframes pawup{0%{opacity:1;transform:translate(-50%,-50%) scale(.6)}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% - 46px)) scale(1.1) rotate(var(--rot))}}
+.go{transition:transform .15s}
+.go:hover{transform:rotate(-2deg) scale(1.03)}
+input[type=range]{width:100%;accent-color:var(--sunset)}
+.scale-label{font-family:var(--display);font-weight:800;font-size:22px;color:var(--sunset);min-height:1.3em}
+.boops{font-variant-numeric:tabular-nums}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:60}
+@media (prefers-reduced-motion:reduce){.tail,.run,#dogsvg.hop,.chip input:checked + label,.paw{animation:none}.body-rect,.front,.bubble{transition:none}.paw{display:none}}
+
+/* decorations */
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:var(--sea);opacity:.07;
+ -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='black'%3E%3Cg transform='translate(20 22) rotate(-20)'%3E%3Cellipse cx='0' cy='6' rx='6' ry='5'/%3E%3Ccircle cx='-7' cy='-2' r='2.6'/%3E%3Ccircle cx='-2.5' cy='-6.5' r='2.6'/%3E%3Ccircle cx='2.5' cy='-6.5' r='2.6'/%3E%3Ccircle cx='7' cy='-2' r='2.6'/%3E%3C/g%3E%3Cg transform='translate(80 82) rotate(15)'%3E%3Cellipse cx='0' cy='6' rx='6' ry='5'/%3E%3Ccircle cx='-7' cy='-2' r='2.6'/%3E%3Ccircle cx='-2.5' cy='-6.5' r='2.6'/%3E%3Ccircle cx='2.5' cy='-6.5' r='2.6'/%3E%3Ccircle cx='7' cy='-2' r='2.6'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+ mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='black'%3E%3Cg transform='translate(20 22) rotate(-20)'%3E%3Cellipse cx='0' cy='6' rx='6' ry='5'/%3E%3Ccircle cx='-7' cy='-2' r='2.6'/%3E%3Ccircle cx='-2.5' cy='-6.5' r='2.6'/%3E%3Ccircle cx='2.5' cy='-6.5' r='2.6'/%3E%3Ccircle cx='7' cy='-2' r='2.6'/%3E%3C/g%3E%3Cg transform='translate(80 82) rotate(15)'%3E%3Cellipse cx='0' cy='6' rx='6' ry='5'/%3E%3Ccircle cx='-7' cy='-2' r='2.6'/%3E%3Ccircle cx='-2.5' cy='-6.5' r='2.6'/%3E%3Ccircle cx='2.5' cy='-6.5' r='2.6'/%3E%3Ccircle cx='7' cy='-2' r='2.6'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+ -webkit-mask-size:120px 120px;mask-size:120px 120px}
+.wrap{position:relative;z-index:1}
+.scene{display:block;width:100%;height:auto;border-radius:22px;overflow:hidden;max-width:100%}
+.cloud{animation:drift 26s linear infinite}
+.cloud.c2{animation-duration:38s;animation-delay:-14s}
+@keyframes drift{from{transform:translateX(-80px)}to{transform:translateX(420px)}}
+.gull{animation:flap .9s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+.gull.g2{animation-delay:-.4s}
+@keyframes flap{from{transform:scaleY(1)}to{transform:scaleY(.55)}}
+.sunray{animation:spin 40s linear infinite;transform-box:fill-box;transform-origin:center}
+@keyframes spin{to{transform:rotate(360deg)}}
+.wave1{animation:sway 6s ease-in-out infinite alternate}
+.wave2{animation:sway 8s ease-in-out infinite alternate-reverse}
+@keyframes sway{from{transform:translateX(-12px)}to{transform:translateX(12px)}}
+legend{display:flex;align-items:center;gap:10px}
+.ico{flex:none;width:36px;height:36px;border-radius:50%;background:var(--chip);display:inline-grid;place-items:center;color:var(--sunset)}
+.ico svg{width:20px;height:20px}
+fieldset{position:relative;overflow:hidden}
+fieldset::after{content:"";position:absolute;right:-18px;top:-18px;width:70px;height:70px;border-radius:50%;background:var(--sunset);opacity:.08;pointer-events:none}
+.foot{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--muted);font-size:14px;font-weight:700;margin-top:6px}
+.foot svg{width:100%;max-width:360px;height:auto}
+@media (prefers-reduced-motion:reduce){.cloud,.gull,.sunray,.wave1,.wave2{animation:none}}
+</style>
+
+<style>body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+  <svg class="scene" viewBox="0 0 360 150" aria-hidden="true">
+    <defs><linearGradient id="skyg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--sky)"/><stop offset="1" stop-color="var(--sunset)" stop-opacity=".35"/></linearGradient></defs>
+    <rect width="360" height="150" fill="url(#skyg)"/>
+    <g transform="translate(280 62)">
+      <g class="sunray" stroke="var(--sunset)" stroke-width="3" stroke-linecap="round" opacity=".6">
+        <line x1="0" y1="-38" x2="0" y2="-30"/><line x1="0" y1="38" x2="0" y2="30"/><line x1="-38" y1="0" x2="-30" y2="0"/><line x1="38" y1="0" x2="30" y2="0"/>
+        <line x1="-27" y1="-27" x2="-21" y2="-21"/><line x1="27" y1="27" x2="21" y2="21"/><line x1="27" y1="-27" x2="21" y2="-21"/><line x1="-27" y1="27" x2="-21" y2="21"/>
+      </g>
+      <circle r="22" fill="var(--sunset)"/>
+    </g>
+    <g class="cloud" fill="var(--card)" opacity=".9"><ellipse cx="40" cy="32" rx="22" ry="9"/><ellipse cx="55" cy="26" rx="14" ry="10"/><ellipse cx="30" cy="28" rx="10" ry="7"/></g>
+    <g class="cloud c2" fill="var(--card)" opacity=".75"><ellipse cx="10" cy="56" rx="18" ry="7"/><ellipse cx="22" cy="51" rx="11" ry="8"/></g>
+    <g fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round" opacity=".7">
+      <path class="gull" d="M120 40 q6 -6 12 0 q6 -6 12 0"/>
+      <path class="gull g2" d="M150 26 q4 -4 8 0 q4 -4 8 0"/>
+      <path class="gull" d="M196 48 q5 -5 10 0 q5 -5 10 0"/>
+    </g>
+    <rect y="96" width="360" height="54" fill="var(--sea)"/>
+    <g fill="var(--sea-deep)" opacity=".45">
+      <path class="wave1" d="M-20 104 q15 -6 30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 t30 0 v50 h-400z"/>
+    </g>
+    <g fill="var(--sky)" opacity=".25">
+      <path class="wave2" d="M-20 118 q20 -5 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 v40 h-400z"/>
+    </g>
+    <!-- jetty -->
+    <g fill="var(--ink)" opacity=".75">
+      <rect x="0" y="92" width="230" height="5" rx="1"/>
+      <rect x="20" y="97" width="3" height="22"/><rect x="60" y="97" width="3" height="22"/><rect x="100" y="97" width="3" height="22"/><rect x="140" y="97" width="3" height="22"/><rect x="180" y="97" width="3" height="22"/><rect x="220" y="97" width="3" height="22"/>
+      <rect x="0" y="84" width="230" height="1.5"/>
+      <rect x="10" y="84" width="1.5" height="8"/><rect x="50" y="84" width="1.5" height="8"/><rect x="90" y="84" width="1.5" height="8"/><rect x="130" y="84" width="1.5" height="8"/><rect x="170" y="84" width="1.5" height="8"/><rect x="210" y="84" width="1.5" height="8"/>
+    </g>
+    <path d="M0 150 L0 132 Q 90 120 180 134 T 360 128 L360 150Z" fill="var(--sand)"/>
+    <g transform="translate(300 140) rotate(12)" fill="var(--sunset)"><path d="M0 -8 L2.4 -2.5 L8 -2.5 L3.6 1.2 L5.2 7 L0 3.6 L-5.2 7 L-3.6 1.2 L-8 -2.5 L-2.4 -2.5Z"/></g>
+    <g transform="translate(250 141)"><path d="M-7 3 Q0 -9 7 3Z" fill="var(--dog)" opacity=".8"/></g>
+  </svg>
+    <h1>Hey Mia, <span>Sunday</span> at the beach?</h1>
+    <p class="intro">I made you a tiny page so you can pick what works for you. Answer what you like and skip what you don't. Meet Frank, the beach sausage. He gets longer with every answer, and he likes being booped.</p>
+    <div class="sig">Nam</div>
+  </header>
+
+  <div class="dogbar">
+   <div class="dogwrap">
+    <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
+    <svg viewBox="0 0 360 64" role="button" aria-label="Boop Frank" tabindex="0" preserveAspectRatio="xMinYMid meet" id="dogsvg">
+      <path class="sand" d="M0 58 Q 15 54 30 58 T 60 58 T 90 58 T 120 58 T 150 58 T 180 58 T 210 58 T 240 58 T 270 58 T 300 58 T 330 58 T 360 58" fill="none" stroke-width="2"/>
+      <g id="dog" transform="translate(10,6)">
+        <!-- tail -->
+        <g transform="translate(14,22)"><path class="tail" d="M0 0 C -10 -6 -16 -14 -18 -20" stroke="var(--dog-dark)" stroke-width="5" fill="none" stroke-linecap="round"/></g>
+        <!-- back legs -->
+        <rect x="18" y="34" width="7" height="16" rx="3" fill="var(--dog-dark)"/>
+        <rect x="28" y="34" width="7" height="16" rx="3" fill="var(--dog)"/>
+        <!-- body -->
+        <rect class="body-rect" id="body" x="10" y="16" width="60" height="24" rx="12" fill="var(--dog)"/>
+        <!-- front: legs, neck, head -->
+        <g class="front" id="front" transform="translate(60,0)">
+          <rect x="-6" y="34" width="7" height="16" rx="3" fill="var(--dog-dark)"/>
+          <rect x="4" y="34" width="7" height="16" rx="3" fill="var(--dog)"/>
+          <rect x="0" y="8" width="18" height="24" rx="9" fill="var(--dog)"/>
+          <ellipse cx="22" cy="12" rx="14" ry="10" fill="var(--dog)"/>
+          <ellipse cx="38" cy="15" rx="9" ry="6" fill="var(--dog)"/>
+          <circle cx="46" cy="14" r="3" fill="var(--ink)"/>
+          <circle cx="26" cy="9" r="2.2" fill="var(--ink)"/>
+          <path d="M14 6 C 8 10 8 22 14 26 C 20 22 20 12 14 6Z" fill="var(--dog-dark)"/>
+        </g>
+      </g>
+    </svg>
+   </div>
+    <div class="meta"><span id="dogname">Sausage length: tiny</span><span><span class="boops" id="boops"></span><span id="count">0 / 5 answered</span></span></div>
+  </div>
+
+  <form id="f" novalidate>
+    <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+    <fieldset>
+      <legend><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span><span>What time on Sunday suits you?</span></legend>
+      <div class="chips" data-q="time">
+        <div class="chip"><input type="radio" name="time" id="t1" value="Morning walk (9 to 11am)"><label for="t1">Morning walk<small>9 to 11am</small></label></div>
+        <div class="chip"><input type="radio" name="time" id="t2" value="Lunch (12 to 2pm)"><label for="t2">Lunch<small>12 to 2pm</small></label></div>
+        <div class="chip"><input type="radio" name="time" id="t3" value="Afternoon (2 to 5pm)"><label for="t3">Afternoon<small>2 to 5pm</small></label></div>
+        <div class="chip"><input type="radio" name="time" id="t4" value="Sunset (around 7pm)"><label for="t4">Sunset<small>around 7pm</small></label></div>
+      </div>
+      <div class="sub">Or name an exact time</div>
+      <input type="time" id="exact" name="exact" aria-label="Exact time">
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 15a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1.5A3.5 3.5 0 0 1 17 15z" fill="currentColor"/><path d="M9 18l-1 2M13 18l-1 2M17 18l-1 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span>If Sunday doesn't work out</span></legend>
+      <p class="hint">Rain, plans, anything. Pick a backup day.</p>
+      <div class="chips">
+        <div class="chip"><input type="checkbox" name="sundayok" id="s1" value="Sunday is fine"><label for="s1">Sunday is fine for me</label></div>
+      </div>
+      <input type="date" id="backup" name="backup" aria-label="Backup date">
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-6-6.2-6-11a6 6 0 0 1 12 0c0 4.8-6 11-6 11z" fill="currentColor"/><circle cx="12" cy="10" r="2.3" fill="var(--chip)"/></svg></span><span>Where should we meet?</span></legend>
+      <p class="hint">You're driving, so pick whatever is easiest to park near.</p>
+      <div class="chips">
+        <div class="chip"><input type="radio" name="meet" id="m1" value="Moseley Square"><label for="m1">Moseley Square</label></div>
+        <div class="chip"><input type="radio" name="meet" id="m2" value="Start of the jetty"><label for="m2">Start of the jetty</label></div>
+        <div class="chip"><input type="radio" name="meet" id="m3" value="Holdfast Shores / marina"><label for="m3">Holdfast Shores</label></div>
+        <div class="chip"><input type="radio" name="meet" id="m4" value="I'll text you when I've parked"><label for="m4">I'll text when I've parked</label></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="15.5" rx="4.5" ry="3.8" fill="currentColor"/><circle cx="5.5" cy="10" r="2.2" fill="currentColor"/><circle cx="9.5" cy="6" r="2.2" fill="currentColor"/><circle cx="14.5" cy="6" r="2.2" fill="currentColor"/><circle cx="18.5" cy="10" r="2.2" fill="currentColor"/></svg></span><span>Pick your dachshund mood for Sunday</span></legend>
+      <div class="chips">
+        <div class="chip"><input type="radio" name="mood" id="d1" value="Chill, sunbathing on the sand"><label for="d1">Chill<small>sunbathing on the sand</small></label></div>
+        <div class="chip"><input type="radio" name="mood" id="d2" value="Zoomies, let's walk the whole beach"><label for="d2">Zoomies<small>walk the whole beach</small></label></div>
+        <div class="chip"><input type="radio" name="mood" id="d3" value="Snack-motivated"><label for="d3">Snack-motivated<small>here for the treats</small></label></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3h-6l-4 4v-4a3 3 0 0 1-3-3z" fill="currentColor"/></svg></span><span>Anything else I should know?</span></legend>
+      <textarea id="note" name="note" placeholder="Optional"></textarea>
+    </fieldset>
+
+    <p class="err" id="err" hidden>Pick a time (or a backup day) so I know when to be there.</p>
+    <button class="go" type="submit">All set, send it</button>
+  </form>
+
+  <section class="done" id="done" hidden>
+    <h2>Woof! See you at the beach</h2>
+    <p id="savedmsg" style="margin:0"></p>
+    <pre class="summary" id="summary"></pre>
+    <button type="button" class="ghost" id="copy">Copy my answers</button>
+    <button type="button" class="ghost" id="edit">Change something</button>
+  </section>
+
+
+</div>
+<canvas id="confetti" hidden></canvas>
+
+<script>
+(function(){
+  const f=document.getElementById('f');
+  const qs=[
+    ()=>f.time.value||f.exact.value,
+    ()=>f.sundayok.checked||f.backup.value,
+    ()=>f.meet.value,
+    ()=>f.mood.value,
+    ()=>f.note.value.trim()
+  ];
+  const names=['tiny','puppy','long','extra long','legendary','maximum sausage'];
+  const bubble=document.getElementById('bubble'),svg=document.getElementById('dogsvg');
+  let bt;
+  function say(t){
+    bubble.textContent=t;
+    const r=svg.getBoundingClientRect(),fr=front.getBoundingClientRect();
+    const x=Math.max(0,Math.min(fr.left-r.left-10,r.width-bubble.offsetWidth));
+    bubble.style.left=x+'px';
+    bubble.classList.add('show');clearTimeout(bt);bt=setTimeout(()=>bubble.classList.remove('show'),2600);
+    hop();
+  }
+  function hop(){svg.classList.remove('hop');void svg.getBoundingClientRect();svg.classList.add('hop')}
+  const react={
+    t1:'Too early... I gotta sleep. Zzz',t2:'Lunch? I\'m listening.',t3:'Afternoon sun. Prime nap time.',t4:'Sunset at Glenelg. Great pick.',
+    s1:'Yay, Sunday it is!',
+    m1:'I\'ll sniff out the spot.',m2:'Jetty! I love the jetty.',m3:'Fancy. Boats!',m4:'Okay, I\'ll wait by the phone.',
+    d1:'Same. Belly up in the sun.',d2:'ZOOMIES!!',d3:'Finally, someone who gets me.'
+  };
+  const boopLines=['Woof!','Boop received.','Hehe, that tickles.','I am 40% sausage.','More pats please.','Bork.','Okay one more.','Is it Sunday yet?'];
+  let boops=0;
+  function boop(){boops++;document.getElementById('boops').textContent='Boops: '+boops+' · ';say(boops===10?'Ten boops! You\'re officially my best friend.':boopLines[Math.floor(Math.random()*boopLines.length)])}
+  svg.addEventListener('click',boop);
+  svg.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();boop()}});
+  const pawSvg='<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><ellipse cx="12" cy="16" rx="5" ry="4.2"/><circle cx="5.5" cy="10" r="2.3"/><circle cx="9.5" cy="6" r="2.3"/><circle cx="14.5" cy="6" r="2.3"/><circle cx="18.5" cy="10" r="2.3"/></svg>';
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function paws(x,y){if(reduce)return;for(let i=0;i<4;i++){const p=document.createElement('div');p.className='paw';p.innerHTML=pawSvg;p.style.left=x+'px';p.style.top=y+'px';p.style.setProperty('--dx',(Math.random()*60-30)+'px');p.style.setProperty('--rot',(Math.random()*60-30)+'deg');p.style.animationDelay=(i*60)+'ms';document.body.appendChild(p);setTimeout(()=>p.remove(),1200)}}
+  f.addEventListener('click',e=>{const l=e.target.closest('.chip label');if(l)paws(e.clientX||l.getBoundingClientRect().left+20,e.clientY||l.getBoundingClientRect().top)});
+  f.addEventListener('change',e=>{
+    const t=e.target;
+    if(react[t.id]&&t.checked)say(react[t.id]);
+    else if(t.id==='exact'&&t.value)say('Noted. Setting an alarm.');
+    else if(t.id==='backup'&&t.value)say('Backup day saved, just in case.');
+    else if(t.id==='note'&&t.value.trim())say('Ooh, secrets.');
+  });
+  const body=document.getElementById('body'),front=document.getElementById('front');
+  function update(){
+    const n=qs.filter(q=>q()).length;
+    const w=60+n*44;
+    body.setAttribute('width',w);
+    front.setAttribute('transform','translate('+(w)+',0)');
+    document.getElementById('count').textContent=n+' / 5 answered';
+    document.getElementById('dogname').textContent='Sausage length: '+names[n];
+  }
+  f.addEventListener('input',update);f.addEventListener('change',update);update();
+
+  function fmtDate(v){if(!v)return'';const d=new Date(v+'T12:00:00');return d.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long'})}
+  function fmtTime(v){if(!v)return'';const[h,m]=v.split(':').map(Number);return((h%12)||12)+':'+String(m).padStart(2,'0')+(h<12?'am':'pm')}
+  function collect(){
+    return{
+      time:f.time.value, exact:fmtTime(f.exact.value),
+      sundayOk:f.sundayok.checked, backup:fmtDate(f.backup.value),
+      meet:f.meet.value,
+      mood:f.mood.value, note:f.note.value.trim()
+    };
+  }
+  function summarise(a){
+    const L=[];
+    L.push('Sunday time: '+([a.time,a.exact&&('exactly '+a.exact)].filter(Boolean).join(', ')||'not picked'));
+    if(a.sundayOk)L.push('Sunday works');
+    if(a.backup)L.push('Backup day: '+a.backup);
+    if(a.meet)L.push('Meet at: '+a.meet);
+    if(a.mood)L.push('Dachshund mood: '+a.mood);
+    if(a.note)L.push('Note: '+a.note);
+    return L.join('\n');
+  }
+
+  const FORMSPREE='https://formspree.io/f/mljgjawd';
+  const goBtn=f.querySelector('.go');
+
+  f.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const a=collect();
+    const err=document.getElementById('err');
+    if(!a.time&&!a.exact&&!a.backup&&!a.sundayOk){err.hidden=false;err.scrollIntoView({behavior:'smooth',block:'center'});return}
+    err.hidden=true;
+    const text=summarise(a);
+    document.getElementById('summary').textContent=text;
+    if(f._gotcha.value)return;
+    goBtn.disabled=true;const oldLabel=goBtn.textContent;goBtn.textContent='Sending...';
+    let saved=false;
+    try{
+      const r=await fetch(FORMSPREE,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify({_subject:'Mia answered the Sunday page',
+          'Sunday time':[a.time,a.exact].filter(Boolean).join(', ')||'-',
+          'Sunday works':a.sundayOk?'Yes':'-','Backup day':a.backup||'-','Meet at':a.meet||'-',
+          'Dachshund mood':a.mood||'-','Note':a.note||'-',summary:text})});
+      saved=r.ok;
+    }catch(x){saved=false}
+    goBtn.disabled=false;goBtn.textContent=oldLabel;
+    document.getElementById('savedmsg').textContent=saved
+      ?'Sent! Nam has your answers.'
+      :'Hmm, that didn\'t send. Tap copy and text these to Nam instead.';
+    document.getElementById('copy').hidden=saved;
+    f.hidden=true;document.getElementById('done').hidden=false;
+    svg.classList.remove('run');void svg.getBoundingClientRect();svg.classList.add('run');
+    setTimeout(()=>say('See you Sunday!'),400);
+    confetti();
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+
+  function confetti(){
+    if(reduce)return;
+    const c=document.getElementById('confetti');c.hidden=false;const x=c.getContext('2d');
+    const dpr=devicePixelRatio||1;c.width=innerWidth*dpr;c.height=innerHeight*dpr;x.scale(dpr,dpr);
+    const css=getComputedStyle(document.documentElement);
+    const cols=['--sunset','--sea','--dog','--sea-deep'].map(v=>css.getPropertyValue(v).trim());
+    const ps=Array.from({length:110},()=>({x:Math.random()*innerWidth,y:-20-Math.random()*innerHeight*.6,vy:2+Math.random()*3,vx:Math.random()*2-1,r:Math.random()*6.28,vr:Math.random()*.2-.1,s:8+Math.random()*8,k:Math.floor(Math.random()*3),c:cols[Math.floor(Math.random()*cols.length)]}));
+    const t0=performance.now();
+    function heart(s){x.beginPath();for(let i=0;i<10;i++){const r=i%2?s*.25:s*.6,a=i*Math.PI/5-Math.PI/2;x.lineTo(Math.cos(a)*r,Math.sin(a)*r)}x.closePath();x.fill()}
+    function paw(s){x.beginPath();x.ellipse(0,s*.25,s*.4,s*.32,0,0,6.28);x.fill();[[-.45,-.15],[-.17,-.45],[.17,-.45],[.45,-.15]].forEach(([a,b])=>{x.beginPath();x.arc(a*s,b*s,s*.18,0,6.28);x.fill()})}
+    function bone(s){x.fillRect(-s*.45,-s*.12,s*.9,s*.24);[[-.45,-.15],[-.45,.15],[.45,-.15],[.45,.15]].forEach(([a,b])=>{x.beginPath();x.arc(a*s,b*s,s*.17,0,6.28);x.fill()})}
+    (function tick(t){
+      x.clearRect(0,0,innerWidth,innerHeight);
+      ps.forEach(p=>{p.y+=p.vy;p.x+=p.vx+Math.sin((t+p.r*500)/400)*.6;p.r+=p.vr;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;[heart,paw,bone][p.k](p.s);x.restore()});
+      if(t-t0<4200)requestAnimationFrame(tick);else{x.clearRect(0,0,innerWidth,innerHeight);c.hidden=true}
+    })(t0);
+  }
+  document.getElementById('copy').addEventListener('click',async ev=>{
+    const t=document.getElementById('summary').textContent;const b=ev.currentTarget;
+    try{await navigator.clipboard.writeText(t);b.textContent='Copied'}
+    catch(x){const r=document.createRange();r.selectNodeContents(document.getElementById('summary'));const s=getSelection();s.removeAllRanges();s.addRange(r);b.textContent='Selected, now copy it'}
+  });
+  document.getElementById('edit').addEventListener('click',()=>{document.getElementById('done').hidden=true;f.hidden=false;document.getElementById('copy').textContent='Copy my answers'});
+
+})();
+</script>
+</body>
+</html>
